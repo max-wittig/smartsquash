@@ -1,5 +1,9 @@
 # smartsquash
 
+[![PyPI](https://badge.fury.io/py/smartsquash.svg)](https://badge.fury.io/py/smartsquash)
+[![PyPI - License](https://img.shields.io/pypi/l/smartsquash.svg)](https://github.com/max-wittig/smartsquash/blob/master/LICENSE)
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+
 > This is still in testing phase.
 
 Makes daily git workflows easier, automates rebases or fixups.
@@ -14,7 +18,7 @@ poetry build
 ### installation
 
 ```sh
-pip3 install dist/smartsquash-0.1.0-py3-none-any.whl
+pip3 install smartsquash
 ```
 
 ### usage
