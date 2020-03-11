@@ -1,6 +1,8 @@
+import sys
 import git.exc
 from smartsquash.helpers import run_rebase
 from typing import Dict, Set, Optional
+from loguru import logger
 
 
 def get_files_changed_in_staging(repo: git.Repo) -> Set[str]:
@@ -23,5 +25,10 @@ def run_fixup(
     command = ["--fixup", fixup_commit_sha]
     if add:
         command.insert(0, "-a")
-    repo.git.commit(*command)
-    run_rebase(repo, target_branch, "true", dry, autosquash=True)
+    try:
+        if dry:
+            logger.log("DRY", f"Would run: {command}")
+        repo.git.commit(*command)
+        run_rebase(repo, target_branch, "true", dry, autosquash=True)
+    except git.CommandError as e:
+        sys.exit(f"Error, while trying to fixup files: ({str(e)})")

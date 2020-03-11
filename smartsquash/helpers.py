@@ -11,25 +11,37 @@ from smartsquash.decorators import memorize_files_changed
 from loguru import logger
 
 
-class ErrorMessages(enum.Enum):
+class ErrorMessage(enum.Enum):
     HEAD_DETACHED = "HEAD is detached. Exiting"
     TARGET_EQUALS_CURRENT = "Target branch equals current active branch. Exiting"
     NOT_A_GIT_REPO = "The target is not a git repository. Exiting"
     PATH_NOT_EXIST = "The path doesn't exist. Exiting"
+    TARGET_NOT_EXIST = "The target branch doesn't exist. Exiting"
 
     def __str__(self):
         return self.value
 
 
+def fatal_log(message: ErrorMessage):
+    logger.error(message)
+    sys.exit(1)
+
+
 def get_repo(repo_path: str, target_branch: str) -> git.Repo:
     if not Path(repo_path).exists():
-        sys.exit(ErrorMessages.PATH_NOT_EXIST)
+        fatal_log(ErrorMessage.PATH_NOT_EXIST)
     try:
         repo: git.Repo = git.Repo(repo_path, search_parent_directories=True)
     except git.exc.InvalidGitRepositoryError:
-        sys.exit(str(ErrorMessages.NOT_A_GIT_REPO))
-    if message := get_repo_invalid_message(repo, target_branch):
-        sys.exit(message)
+        fatal_log(ErrorMessage.NOT_A_GIT_REPO)
+    try:
+        repo.heads[target_branch]
+    except (git.exc.GitCommandError, git.GitCommandError, AttributeError, IndexError):
+        fatal_log(ErrorMessage.TARGET_NOT_EXIST)
+    if repo.head.is_detached:
+        fatal_log(ErrorMessage.HEAD_DETACHED)
+    if repo.active_branch.name == target_branch:
+        fatal_log(ErrorMessage.TARGET_EQUALS_CURRENT)
     return repo
 
 
@@ -79,14 +91,6 @@ def get_commits_changed_files(commits: List[git.Commit]) -> Dict[str, Set[str]]:
     return commit_changed
 
 
-def get_repo_invalid_message(repo: git.Repo, target_branch: str) -> Optional[str]:
-    if repo.head.is_detached:
-        return str(ErrorMessages.HEAD_DETACHED)
-    if repo.active_branch.name == target_branch:
-        return str(ErrorMessages.TARGET_EQUALS_CURRENT)
-    return None
-
-
 def run_rebase(
     repo: git.Repo,
     target_branch: str,
@@ -96,10 +100,11 @@ def run_rebase(
 ):
     os.environ["GIT_SEQUENCE_EDITOR"] = sequence_editor
     args: List[str] = ["-i", target_branch]
-    if dry:
-        sys.exit(0)
     if autosquash:
         args.insert(0, "--autosquash")
+    if dry:
+        logger.log("DRY", f"Would run: 'git rebase{' '.join(args)}'")
+        sys.exit(0)
     try:
         repo.git.rebase(args)
         print("Rebase done")

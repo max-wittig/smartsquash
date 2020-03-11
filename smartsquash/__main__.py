@@ -34,12 +34,20 @@ def get_args() -> dict:
         default=False,
         action="store_true",
     )
+    parser.add_argument(
+        "--no-add",
+        help="Don't add modified files to staging area",
+        required=False,
+        default=False,
+        action="store_true",
+    )
     return vars(parser.parse_args())
 
 
 def setup_logger():
     logger.remove()
     logger.add(sys.stdout, colorize=True, format="<level>{message}</level>")
+    logger.level("DRY", no=38, color="<yellow>", icon="Stuff")
 
 
 def main():
@@ -48,8 +56,9 @@ def main():
     repo_path: str = args.get("repo")
     target_branch: str = args.get("target_branch")
     dry: bool = args.get("dry")
+    no_add: bool = args.get("no_add")
 
     repo: git.Repo = helpers.get_repo(repo_path, target_branch)
-    sq.fixup(target_branch, repo, dry)
+    sq.fixup(target_branch, repo, not no_add, dry)
     if args.get("squash"):
         sq.squash(target_branch, repo, dry)

@@ -20,7 +20,7 @@ pip3 install dist/smartsquash-0.1.0-py3-none-any.whl
 ### usage
 
 ```sh
-usage: sq [-h] [--target-branch TARGET_BRANCH] [--repo REPO] [--dry] [-s]
+usage: sq [-h] [--target-branch TARGET_BRANCH] [--repo REPO] [--dry] [-s] [--no-add]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -29,6 +29,7 @@ optional arguments:
   --repo REPO           Specify repo to modify. Uses pwd by default
   --dry                 Run dry
   -s, --squash          Squash similar commits on your feature branch
+  --no-add              Don't add modified files to staging area
 ```
 
 ### run tests

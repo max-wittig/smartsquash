@@ -104,7 +104,7 @@ def test_repo_detached_head_message(repository: git.Repo, commit_files: Callable
     commit = commit_files(repository, ["test.txt"], "whatever")
     repository.head.reference = commit.hexsha
     assert helpers.get_repo_invalid_message(repository, "master") == str(
-        helpers.ErrorMessages.HEAD_DETACHED
+        helpers.ErrorMessage.HEAD_DETACHED
     )
 
 

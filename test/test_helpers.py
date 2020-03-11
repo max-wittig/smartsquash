@@ -72,5 +72,5 @@ def test_repo_target_branch_invalid_message(
     commit_files(repository, ["test.txt"], "whatever")
     repository.head.reference = repository.heads["master"]
     assert helpers.get_repo_invalid_message(repository, "master") == str(
-        helpers.ErrorMessages.TARGET_EQUALS_CURRENT
+        helpers.ErrorMessage.TARGET_EQUALS_CURRENT
     )
