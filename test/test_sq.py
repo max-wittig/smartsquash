@@ -22,10 +22,11 @@ def test_squash_dry(repository: git.Repo, commit_files: Callable):
     commit_files(repository, ["test.txt"], "whatever")
     commit_files(repository, ["test.txt"], "even other content")
     commits_before = helpers.retrieve_commits(repository, target_branch)
-    assert len(commits_before) == 2
-    with unittest.mock.patch("sys.exit") as exit_mock:
-        sq.squash(target_branch, repository, True)
-        assert exit_mock.called
+    assert (
+        len(commits_before)
+        == len(helpers.retrieve_commits(repository, target_branch))
+        == 2
+    )
 
 
 def test_fixup_files_repo_not_dirty(

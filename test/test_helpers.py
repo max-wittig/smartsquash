@@ -64,13 +64,3 @@ def test_files_changed_by_commit_1(repository: git.Repo, commit_files: Callable)
         helpers.files_changed_by_commit(repository.working_dir, commit_3.hexsha)
         == changed_3
     )
-
-
-def test_repo_target_branch_invalid_message(
-    repository: git.Repo, commit_files: Callable
-):
-    commit_files(repository, ["test.txt"], "whatever")
-    repository.head.reference = repository.heads["master"]
-    assert helpers.get_repo_invalid_message(repository, "master") == str(
-        helpers.ErrorMessage.TARGET_EQUALS_CURRENT
-    )

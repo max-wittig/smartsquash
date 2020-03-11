@@ -100,14 +100,6 @@ def test_has_same_files():
     assert not squash.has_same_files(files_a, files_c)
 
 
-def test_repo_detached_head_message(repository: git.Repo, commit_files: Callable):
-    commit = commit_files(repository, ["test.txt"], "whatever")
-    repository.head.reference = commit.hexsha
-    assert helpers.get_repo_invalid_message(repository, "master") == str(
-        helpers.ErrorMessage.HEAD_DETACHED
-    )
-
-
 def test_get_rebase_data_1(repository: git.Repo, commit_files: Callable):
     commit_files(repository, ["test.txt"], "whatever")
     commit_files(repository, ["test.txt"], "some other content")

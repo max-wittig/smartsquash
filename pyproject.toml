@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "smartsquash"
-version = "0.1.3"
+version = "0.2.1"
 description = "Makes daily git workflows easier, automates rebases or fixups."
 authors = ["Max Wittig <max.wittig95@gmail.com>"]
 readme = "README.md"
