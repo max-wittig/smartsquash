@@ -21,7 +21,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.8"
 gitpython = "^3.0.5"
-loguru = "^0.4.1"
+loguru = ">=0.4.1,<0.6.0"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
